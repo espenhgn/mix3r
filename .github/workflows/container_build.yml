@@ -67,10 +67,10 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}:docker"
+          context: "{{defaultContext}}"
           push: False
           load: True
           tags: ${{ steps.meta.outputs.tags }}
           file:
-            ./Dockerfile
+            ./docker/Dockerfile
           platforms: linux/amd64

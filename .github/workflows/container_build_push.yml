@@ -68,7 +68,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file:
-            ./Dockerfile
+            ./docker/Dockerfile
           platforms: linux/amd64
 
   # build-apptainer-container:
