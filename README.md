@@ -1,4 +1,6 @@
-### Create cluster environment with [micromamba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html)
+# MIX3R
+
+## Create cluster environment with [micromamba](https://mamba.readthedocs.io/en/latest/user_guide/micromamba.html)
 
 The procedure should work on most of Linux distributions (but not on Mac).
 
@@ -17,7 +19,7 @@ micromamba create -n mix3r \
     conda-pack=0.8.0 \
     numpy=2.0.2 \
     scipy=1.14.1 \
-    numba=0.6.0 \
+    numba=0.60.0 \
     cuda-nvcc cuda-nvrtc "cuda-version>=12.0,<=12.4" \
     pandas=2.2.3 \
     matplotlib-base=3.9.2 \
@@ -80,3 +82,36 @@ Rscript make_euler.r my_analysis_all_runs.parameters.csv my_analysis.euler.png "
 ```
 
 Where the first argument is a path to the file with model parameters produced with `extract_p.py` script, the second argument is output file name and the last three arguments are trait labels to be used in the Euler diagram.
+
+
+## Docker
+
+### Fetch from GitHub Container Registry
+
+    docker pull ghcr.io/precimed/mix3r:latest
+
+### Build locally on host
+
+To build the image locally, you need to have Docker installed on your machine. Then you can run the following command in the root directory of the repository:
+
+```bash
+    docker build --platform=linux/amd64 -t ghcr.io/precimed/mix3r -f docker/Dockerfile .
+```
+
+### Running the container
+
+Use ``bash`` as the entrypoint to get a shell:
+
+```bash
+    docker run -it --rm --entrypoint bash ghcr.io/precimed/mix3r:latest
+```
+You can also run the container with a command
+
+```bash
+    docker run -it --rm ghcr.io/precimed/mix3r:latest <command>  # Available commands are: mix3r_int_weights, extract_p, make_template, make_euler
+```
+
+## Singularity/Apptainer
+
+TODO: add instructions for Singularity/Apptainer
+
