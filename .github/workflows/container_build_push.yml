@@ -6,7 +6,7 @@ on:
       - "v*.*.*"
 
 env:
-  LATEST_TAG: ghcr.io/precimed/mix3r:latest
+  LATEST_TAG: ghcr.io/${{ github.repository_owner }}/mix3r:latest
 
 jobs:
   docker:
@@ -68,8 +68,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file:
-            ./dockerfiles/mix3r/Dockerfile
-          platforms: linux/amd64,linux/arm64
+            ./Dockerfile
+          platforms: linux/amd64
 
   # build-apptainer-container:
   #   needs: docker

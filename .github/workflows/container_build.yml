@@ -10,7 +10,7 @@ on:
     tags:
       - "v*.*.*"
 env:
-  LATEST_TAG: ghcr.io/precimed/mix3r:latest
+  LATEST_TAG: ghcr.io/${{ github.repository_owner }}/mix3r:latest
 
 jobs:
   docker:
@@ -72,5 +72,5 @@ jobs:
           load: True
           tags: ${{ steps.meta.outputs.tags }}
           file:
-            ./dockerfiles/mix3r/Dockerfile
-          platforms: linux/amd64, linux/arm64
+            ./Dockerfile
+          platforms: linux/amd64
