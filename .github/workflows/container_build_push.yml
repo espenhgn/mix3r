@@ -109,7 +109,7 @@ jobs:
           EOF
           push_tags="$(printf $csv_tags | sed -e "s/mix3r/mix3r_sif/g")"
           echo ${{ secrets.GITHUB_TOKEN }} | oras login --username ${{ github.repository_owner }} --password-stdin ghcr.io
-          apptainer build -F --build-arg mtag_image="$first_tag" mtag.sif apptainer/mix3r.def
+          apptainer build -F --build-arg mix3r_image="$first_tag" mix3r.sif apptainer/mix3r.def
           oras push "$push_tags" mix3r.sif
           rm mix3r.sif
         shell: sh
