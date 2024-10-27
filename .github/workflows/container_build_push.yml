@@ -71,45 +71,45 @@ jobs:
             ./docker/Dockerfile
           platforms: linux/amd64
 
-  # build-apptainer-container:
-  #   needs: docker
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: read
-  #     packages: write
-  #   name: Build Apptainer Container
-  #   steps:
-  #     - name: Check out code for the container builds
-  #       uses: actions/checkout@v4
-  #     - name: Setup Apptainer
-  #       uses: eWaterCycle/setup-apptainer@v2
-  #       with:
-  #         apptainer-version: 1.3.4
-  #     - name: Docker meta 
-  #       id: meta
-  #       uses: docker/metadata-action@v5
-  #       with:
-  #         images: |
-  #           ghcr.io/${{ github.repository_owner }}/mix3r            
-  #         tags: |
-  #           type=schedule
-  #           type=ref,event=branch
-  #           type=ref,event=pr
-  #           type=pep440,pattern={{version}}
-  #           type=semver,pattern={{version}}
-  #           type=semver,pattern={{major}}.{{minor}}
-  #           type=sha
-  #           type=raw,value=latest,enable={{is_default_branch}} 
-  #     - name: Build and push Apptainer container
-  #       run: |
-  #         tags="${{ steps.meta.outputs.tags }}"
-  #         csv_tags=$(printf "%s\n" "$tags" | awk -F: 'NR==1{printf "%s,", $0; next} {printf "%s,", $NF}' | sed 's/,$//')
-  #         IFS= read -r first_tag <<EOF
-  #         $tags
-  #         EOF
-  #         push_tags="$(printf $csv_tags | sed -e "s/mix3r/mix3r_sif/g")"
-  #         echo ${{ secrets.GITHUB_TOKEN }} | oras login --username ${{ github.repository_owner }} --password-stdin ghcr.io
-  #         apptainer build mix3r.sif docker://"$first_tag"
-  #         oras push "$push_tags" mix3r.sif
-  #         rm mix3r.sif
-  #       shell: sh
+  build-apptainer-container:
+    needs: docker
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    name: Build Apptainer Container
+    steps:
+      - name: Check out code for the container builds
+        uses: actions/checkout@v4
+      - name: Setup Apptainer
+        uses: eWaterCycle/setup-apptainer@v2
+        with:
+          apptainer-version: 1.3.4
+      - name: Docker meta 
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/${{ github.repository_owner }}/mix3r            
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=pep440,pattern={{version}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}} 
+      - name: Build and push Apptainer container
+        run: |
+          tags="${{ steps.meta.outputs.tags }}"
+          csv_tags=$(printf "%s\n" "$tags" | awk -F: 'NR==1{printf "%s,", $0; next} {printf "%s,", $NF}' | sed 's/,$//')
+          IFS= read -r first_tag <<EOF
+          $tags
+          EOF
+          push_tags="$(printf $csv_tags | sed -e "s/mix3r/mix3r_sif/g")"
+          echo ${{ secrets.GITHUB_TOKEN }} | oras login --username ${{ github.repository_owner }} --password-stdin ghcr.io
+          apptainer build -F --build-arg mtag_image="$first_tag" mtag.sif apptainer/mix3r.def
+          oras push "$push_tags" mix3r.sif
+          rm mix3r.sif
+        shell: sh
